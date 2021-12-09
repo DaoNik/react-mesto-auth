@@ -1,4 +1,5 @@
 import React from "react";
+import { Routes, Route } from "react-router-dom";
 import "../index.css";
 import Header from "./Header";
 import api from "../utils/api";
@@ -10,6 +11,7 @@ import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import Login from "./Login";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
@@ -160,16 +162,27 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Header />
-
-      <Main
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onEditAvatar={handleEditAvatarClick}
-        onCardClick={handleCardClick}
-        cards={cards}
-        onCardLike={handleCardLike}
-        onCardDelete={handleDeleteCard}
-      />
+      <Routes>
+        <Route
+          exact
+          path="/react-mesto-auth"
+          element={
+            currentUser.loggedIn ? (
+              <Main
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handleDeleteCard}
+              />
+            ) : (
+              <Login />
+            )
+          }
+        />
+      </Routes>
 
       <Footer />
 
