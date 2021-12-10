@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import "../index.css";
 import Header from "./Header";
 import api from "../utils/api";
@@ -12,13 +12,17 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
+import Register from "./Register";
+import InfoTooltip from "./InfoTooltip";
 
 function App() {
+  const navigate = useNavigate();
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({
     isOpen: false,
     name: "",
@@ -152,6 +156,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsInfoTooltipOpen(false);
     setSelectedCard({
       isOpen: false,
       name: "",
@@ -178,13 +183,15 @@ function App() {
                 onCardDelete={handleDeleteCard}
               />
             ) : (
-              <Login />
+              <Register />
             )
           }
         />
       </Routes>
 
       <Footer />
+
+      <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} />
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
