@@ -11,7 +11,7 @@ export default function Register() {
         <button className="login__submit" type="submit">
           Зарегистрироваться
         </button>
-        <Link to="/react-mesto-auth/login" className="login__link">
+        <Link to="/react-mesto-auth/sign-in" className="login__link">
           Уже зарегистрированы? Войти
         </Link>
       </form>

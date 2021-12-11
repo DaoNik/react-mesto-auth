@@ -14,9 +14,12 @@ import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
 import Register from "./Register";
 import InfoTooltip from "./InfoTooltip";
+import * as auth from "../utils/auth";
+import RequireAuth from "./RequireAuth";
 
 function App() {
   const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = React.useState(true);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
@@ -48,7 +51,6 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
     if (isLiked) {
       api
         .deleteLike(card._id)
@@ -164,29 +166,44 @@ function App() {
     });
   }
 
+  function handleLink(path) {
+    const res = {
+      link: "",
+      text: "",
+    };
+    if (loggedIn) {
+      res.text = "Выйти";
+      res.link = "/react-mesto-auth/sign-in";
+    } else {
+      res.text = "Зарегистрироваться";
+      res.link = "/react-mesto-auth/sign-up";
+    }
+    return res;
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header />
+      <Header link={handleLink().link} text={handleLink().text} />
       <Routes>
         <Route
           exact
           path="/react-mesto-auth"
           element={
-            currentUser.loggedIn ? (
-              <Main
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handleDeleteCard}
-              />
-            ) : (
-              <Register />
-            )
+            <RequireAuth
+              loggedIn={true}
+              component={Main}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleDeleteCard}
+            />
           }
         />
+        <Route path="/react-mesto-auth/sign-up" element={<Register />} />
+        <Route path="/react-mesto-auth/sign-in" element={<Login />} />
       </Routes>
 
       <Footer />
