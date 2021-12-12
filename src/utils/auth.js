@@ -17,8 +17,8 @@ export const register = (email, password) => {
     .catch((err) => console.log(err));
 };
 
-export const authorize = (password, email) => {
-  return fetch(`${BASE_URL}/auth/signin`, {
+export const authorize = (email, password) => {
+  return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

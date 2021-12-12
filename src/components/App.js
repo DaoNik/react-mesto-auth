@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import "../index.css";
-import Header from "./Header";
 import api from "../utils/api";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -166,6 +165,13 @@ function App() {
     });
   }
 
+  function handleLogin(email, password) {
+    auth.authorize(email, password).then((res) => {
+      console.log(res);
+      setLoggedIn(true);
+    });
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Routes>
@@ -187,7 +193,10 @@ function App() {
           }
         />
         <Route path="/react-mesto-auth/sign-up" element={<Register />} />
-        <Route path="/react-mesto-auth/sign-in" element={<Login />} />
+        <Route
+          path="/react-mesto-auth/sign-in"
+          element={<Login onSubmit={handleLogin} />}
+        />
       </Routes>
 
       <Footer />
