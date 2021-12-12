@@ -166,24 +166,8 @@ function App() {
     });
   }
 
-  function handleLink(path) {
-    const res = {
-      link: "",
-      text: "",
-    };
-    if (loggedIn) {
-      res.text = "Выйти";
-      res.link = "/react-mesto-auth/sign-in";
-    } else {
-      res.text = "Зарегистрироваться";
-      res.link = "/react-mesto-auth/sign-up";
-    }
-    return res;
-  }
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header link={handleLink().link} text={handleLink().text} />
       <Routes>
         <Route
           exact
