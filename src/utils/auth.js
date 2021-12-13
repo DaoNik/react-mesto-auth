@@ -7,14 +7,7 @@ export const register = (email, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ password, email }),
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => console.log(err));
+  });
 };
 
 export const authorize = (email, password) => {
@@ -33,7 +26,15 @@ export const authorize = (email, password) => {
         return data;
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (err === "400") {
+        console.log("не передано одно из полей");
+      } else if (err === "401") {
+        console.log("пользователь с email не найден");
+      } else {
+        console.log(`Ошибка: ${err}`);
+      }
+    });
 };
 
 export const checkToken = (token) => {
@@ -45,5 +46,14 @@ export const checkToken = (token) => {
     },
   })
     .then((res) => res.json())
-    .then((data) => data);
+    .then((data) => data)
+    .catch((err) => {
+      if (err === "400") {
+        console.log("Токен не передан или передан не в том формате");
+      } else if (err === "401") {
+        console.log("Переданный токен некорректен");
+      } else {
+        console.log(`Ошибка: ${err}`);
+      }
+    });
 };

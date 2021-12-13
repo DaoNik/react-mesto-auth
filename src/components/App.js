@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "../index.css";
 import api from "../utils/api";
 import Main from "./Main";
@@ -180,18 +174,39 @@ function App() {
   }
 
   function handleRegister(email, password) {
-    auth.register(email, password).then((res) => {
-      setLoggedIn(true);
-      navigate("/react-mesto-auth");
-    });
+    auth
+      .register(email, password)
+      .then((response) => {
+        return response.json();
+      })
+      .then((res) => {
+        setLoggedIn(true);
+        handleCheckRegister(true);
+      })
+      .catch((err) => {
+        handleCheckRegister(false);
+        if (err === "400") {
+          console.log("некорректно заполнено одно из полей");
+        } else {
+          console.log(`Ошибка: ${err}`);
+        }
+      });
   }
+
+  function handleCheckRegister(isRegister) {
+    setIsInfoTooltipOpen(true);
+    if (isRegister) {
+      navigate("/react-mesto-auth");
+    }
+  }
+
   const location = useLocation();
 
   React.useEffect(() => {
     handleTokenCheck(location.pathname);
   }, []);
 
-  const handleTokenCheck = (path) => {
+  function handleTokenCheck(path) {
     if (localStorage.getItem("token")) {
       auth.checkToken(localStorage.getItem("token")).then((res) => {
         if (res) {
@@ -200,7 +215,7 @@ function App() {
         }
       });
     }
-  };
+  }
 
   const handleLogout = (event) => {
     event.preventDefault();
@@ -242,7 +257,11 @@ function App() {
 
       <Footer />
 
-      <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} />
+      <InfoTooltip
+        isRegister={loggedIn}
+        isOpen={isInfoTooltipOpen}
+        onClose={closeAllPopups}
+      />
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
