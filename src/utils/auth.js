@@ -1,7 +1,7 @@
 export const BASE_URL = "https://auth.nomoreparties.co";
 
 export const register = (email, password) => {
-  return fetch(`${BASE_URL}/auth/signup`, {
+  return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -27,8 +27,8 @@ export const authorize = (email, password) => {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.user) {
-        localStorage.setItem("jwt", data.jwt);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
 
         return data;
       }

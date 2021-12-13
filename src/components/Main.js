@@ -8,7 +8,11 @@ function Main(props) {
 
   return (
     <>
-      <Header link="/react-mesto-auth/sign-in" text="Выйти" />
+      <Header
+        link="/react-mesto-auth/sign-in"
+        onLogout={props.onLogout}
+        text="Выйти"
+      />
       <main>
         <section className="profile">
           <div className="profile__wrapper">

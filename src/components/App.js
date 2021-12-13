@@ -1,5 +1,11 @@
 import React from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import "../index.css";
 import api from "../utils/api";
 import Main from "./Main";
@@ -18,7 +24,7 @@ import RequireAuth from "./RequireAuth";
 
 function App() {
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = React.useState(true);
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
@@ -169,8 +175,39 @@ function App() {
     auth.authorize(email, password).then((res) => {
       console.log(res);
       setLoggedIn(true);
+      navigate("/react-mesto-auth");
     });
   }
+
+  function handleRegister(email, password) {
+    auth.register(email, password).then((res) => {
+      setLoggedIn(true);
+      navigate("/react-mesto-auth");
+    });
+  }
+  const location = useLocation();
+
+  React.useEffect(() => {
+    handleTokenCheck(location.pathname);
+  }, []);
+
+  const handleTokenCheck = (path) => {
+    if (localStorage.getItem("token")) {
+      auth.checkToken(localStorage.getItem("token")).then((res) => {
+        if (res) {
+          setLoggedIn(true);
+          navigate(path);
+        }
+      });
+    }
+  };
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+    navigate("/react-mesto-auth/sign-in");
+  };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -180,7 +217,7 @@ function App() {
           path="/react-mesto-auth"
           element={
             <RequireAuth
-              loggedIn={true}
+              loggedIn={loggedIn}
               component={Main}
               onEditProfile={handleEditProfileClick}
               onAddPlace={handleAddPlaceClick}
@@ -189,10 +226,14 @@ function App() {
               cards={cards}
               onCardLike={handleCardLike}
               onCardDelete={handleDeleteCard}
+              onLogout={handleLogout}
             />
           }
         />
-        <Route path="/react-mesto-auth/sign-up" element={<Register />} />
+        <Route
+          path="/react-mesto-auth/sign-up"
+          element={<Register onSubmit={handleRegister} />}
+        />
         <Route
           path="/react-mesto-auth/sign-in"
           element={<Login onSubmit={handleLogin} />}

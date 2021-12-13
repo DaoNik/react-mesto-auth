@@ -32,6 +32,7 @@ export default function Login({ onSubmit }) {
             placeholder="Email"
           ></input>
           <input
+            type="password"
             className="login__input"
             value={password}
             onChange={handleChangePassword}
