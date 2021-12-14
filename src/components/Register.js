@@ -22,7 +22,7 @@ export default function Register({ onSubmit }) {
 
   return (
     <>
-      <Header link="/sign-in" text="Войти" />
+      <Header link="/react-mesto-auth/sign-in" text="Войти" />
       <section className="login">
         <h2 className="login__title">Регистрация</h2>
         <form onSubmit={handleRegister}>
@@ -42,7 +42,7 @@ export default function Register({ onSubmit }) {
           <button className="login__submit" type="submit">
             Зарегистрироваться
           </button>
-          <Link to="/sign-in" className="login__link">
+          <Link to="/react-mesto-auth/sign-in" className="login__link">
             Уже зарегистрированы? Войти
           </Link>
         </form>

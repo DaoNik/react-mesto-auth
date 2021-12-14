@@ -21,7 +21,7 @@ export default function Login({ onSubmit }) {
 
   return (
     <>
-      <Header link="/sign-up" text="Зарегистрироваться" />
+      <Header link="/react-mesto-auth/sign-up" text="Зарегистрироваться" />
       <section className="login">
         <h2 className="login__title">Вход</h2>
         <form onSubmit={handleLogin}>

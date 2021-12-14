@@ -187,7 +187,7 @@ function App() {
         setLoggedIn(true);
         setUserEmail(email);
         localStorage.setItem("email", email);
-        navigate("/");
+        navigate("/react-mesto-auth");
       })
       .catch((err) => {
         if (err === "400") {
@@ -222,7 +222,7 @@ function App() {
   function handleCheckRegister(isRegister) {
     setIsInfoTooltipOpen(true);
     if (isRegister) {
-      navigate("/");
+      navigate("/react-mesto-auth");
     }
   }
 
@@ -267,7 +267,7 @@ function App() {
       <Routes>
         <Route
           exact
-          path="/"
+          path="/react-mesto-auth"
           element={
             <RequireAuth
               loggedIn={loggedIn}
@@ -285,10 +285,13 @@ function App() {
           }
         />
         <Route
-          path="/sign-up"
+          path="/react-mesto-auth/sign-up"
           element={<Register onSubmit={handleRegister} />}
         />
-        <Route path="/sign-in" element={<Login onSubmit={handleLogin} />} />
+        <Route
+          path="/react-mesto-auth/sign-in"
+          element={<Login onSubmit={handleLogin} />}
+        />
       </Routes>
 
       <Footer />

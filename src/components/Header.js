@@ -11,7 +11,7 @@ function Header({ link, text, onLogout, userEmail }) {
 
   return (
     <header className="header">
-      <Link to="/" className="header__link">
+      <Link to="/react-mesto-auth" className="header__link">
         <img src={logo} alt="Логотип Mesto-Russia" className="header__image" />
       </Link>
       <div className="header__auth-block">
