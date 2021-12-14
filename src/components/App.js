@@ -18,6 +18,9 @@ import RequireAuth from "./RequireAuth";
 
 function App() {
   const navigate = useNavigate();
+  const [userEmail, setUserEmail] = React.useState(
+    localStorage.getItem("email") ? localStorage.getItem("email") : ""
+  );
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
@@ -165,23 +168,46 @@ function App() {
     });
   }
 
+  React.useEffect(() => {
+    const closeByEscape = (e) => {
+      if (e.key === "Escape") {
+        closeAllPopups();
+      }
+    };
+
+    document.addEventListener("keydown", closeByEscape);
+
+    return () => document.removeEventListener("keydown", closeByEscape);
+  }, []);
+
   function handleLogin(email, password) {
-    auth.authorize(email, password).then((res) => {
-      console.log(res);
-      setLoggedIn(true);
-      navigate("/react-mesto-auth");
-    });
+    auth
+      .authorize(email, password)
+      .then((res) => {
+        setLoggedIn(true);
+        setUserEmail(email);
+        localStorage.setItem("email", email);
+        navigate("/");
+      })
+      .catch((err) => {
+        if (err === "400") {
+          console.log("не передано одно из полей");
+        } else if (err === "401") {
+          console.log("пользователь с email не найден");
+        } else {
+          console.log(`Ошибка: ${err}`);
+        }
+      });
   }
 
   function handleRegister(email, password) {
     auth
       .register(email, password)
-      .then((response) => {
-        return response.json();
-      })
       .then((res) => {
         setLoggedIn(true);
         handleCheckRegister(true);
+        setUserEmail(email);
+        localStorage.setItem("email", email);
       })
       .catch((err) => {
         handleCheckRegister(false);
@@ -196,7 +222,7 @@ function App() {
   function handleCheckRegister(isRegister) {
     setIsInfoTooltipOpen(true);
     if (isRegister) {
-      navigate("/react-mesto-auth");
+      navigate("/");
     }
   }
 
@@ -208,20 +234,32 @@ function App() {
 
   function handleTokenCheck(path) {
     if (localStorage.getItem("token")) {
-      auth.checkToken(localStorage.getItem("token")).then((res) => {
-        if (res) {
-          setLoggedIn(true);
-          navigate(path);
-        }
-      });
+      auth
+        .checkToken(localStorage.getItem("token"))
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            navigate(path);
+          }
+        })
+        .catch((err) => {
+          if (err === "400") {
+            console.log("Токен не передан или передан не в том формате");
+          } else if (err === "401") {
+            console.log("Переданный токен некорректен");
+          } else {
+            console.log(`Ошибка: ${err}`);
+          }
+        });
     }
   }
 
-  const handleLogout = (event) => {
-    event.preventDefault();
+  const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
     setLoggedIn(false);
-    navigate("/react-mesto-auth/sign-in");
+    setUserEmail("");
+    navigate("/sign-in");
   };
 
   return (
@@ -229,7 +267,7 @@ function App() {
       <Routes>
         <Route
           exact
-          path="/react-mesto-auth"
+          path="/"
           element={
             <RequireAuth
               loggedIn={loggedIn}
@@ -242,17 +280,15 @@ function App() {
               onCardLike={handleCardLike}
               onCardDelete={handleDeleteCard}
               onLogout={handleLogout}
+              userEmail={userEmail}
             />
           }
         />
         <Route
-          path="/react-mesto-auth/sign-up"
+          path="/sign-up"
           element={<Register onSubmit={handleRegister} />}
         />
-        <Route
-          path="/react-mesto-auth/sign-in"
-          element={<Login onSubmit={handleLogin} />}
-        />
+        <Route path="/sign-in" element={<Login onSubmit={handleLogin} />} />
       </Routes>
 
       <Footer />

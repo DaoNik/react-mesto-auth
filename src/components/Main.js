@@ -9,7 +9,8 @@ function Main(props) {
   return (
     <>
       <Header
-        link="/react-mesto-auth/sign-in"
+        link="/sign-in"
+        userEmail={props.userEmail}
         onLogout={props.onLogout}
         text="Выйти"
       />
